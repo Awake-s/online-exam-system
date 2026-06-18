@@ -21,7 +21,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * 示例：<pre>
      *   app:
      *     cors:
-     *       allowed-origins: https://kimi888.xyz,https://kimi123.site
+     *       allowed-origins: http://124.222.21.219,https://examplatform.online
      * </pre>
      */
     @Value("${app.cors.allowed-origins:*}")

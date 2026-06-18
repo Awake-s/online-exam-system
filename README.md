@@ -12,7 +12,7 @@
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479a1.svg)](https://www.mysql.com/)
 [![Redis](https://img.shields.io/badge/Redis-6.x-dc382d.svg)](https://redis.io/)
 
-[在线体验](https://kimi888.xyz) · [产品官网](https://awake-s.github.io/online-exam-system/) · [功能特性](docs-site/features.md) · [迭代路线](docs-site/roadmap.md)
+[在线体验](http://124.222.21.219) · [产品官网](https://awake-s.github.io/online-exam-system/) · [功能特性](docs-site/features.md) · [迭代路线](docs-site/roadmap.md)
 
 </div>
 
@@ -175,7 +175,7 @@ npm run dev
 
 <div align="center">
 
-**[在线体验](https://kimi888.xyz)** · **[产品官网](https://awake-s.github.io/online-exam-system/)** · **[迭代路线](doc/迭代路线图.md)**
+**[在线体验](http://124.222.21.219)** · **[产品官网](https://awake-s.github.io/online-exam-system/)** · **[迭代路线](doc/迭代路线图.md)**
 
 如果这个项目对你有帮助，欢迎 ⭐ Star 支持！
 
