@@ -9,10 +9,10 @@ import { defineConfig } from 'vitepress'
 //   - 将下方 <GITHUB_USER>、<REPO>、<LIVE_URL> 替换为你真实的值
 // ====================================================================
 
-const GITHUB_USER = 'awake' // TODO: 替换为你的 GitHub 用户名
-const REPO = 'online-exam-system' // TODO: 替换为你的仓库名
+const GITHUB_USER = 'Awake-s' // GitHub 用户名
+const REPO = 'online-exam-system' // 仓库名
 // 在线体验地址（已部署的后台系统），访客点击「在线体验」会跳到这里
-const LIVE_URL = 'http://124.222.21.219/'
+const LIVE_URL = 'https://kimi888.xyz'
 
 export default defineConfig({
   lang: 'zh-CN',
