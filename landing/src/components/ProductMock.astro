@@ -1,0 +1,191 @@
+---
+import Icon from './Icon.astro'
+
+// 高保真产品界面还原（HTML/CSS，含真实中文内容），替代灰骨架占位图。
+// type: 'exam' 学生作答 | 'grading' 成绩分析 | 'dashboard' 管理后台
+interface Props {
+  type: 'exam' | 'grading' | 'dashboard'
+  chrome?: boolean
+}
+const { type, chrome = true } = Astro.props
+
+const bars = [
+  { label: '<60', h: 16, fill: false },
+  { label: '60-69', h: 34, fill: false },
+  { label: '70-79', h: 62, fill: true },
+  { label: '80-89', h: 80, fill: false },
+  { label: '90+', h: 44, fill: false }
+]
+const users = [
+  { name: '王建华', role: '教师', cls: '计算机 2201', on: true },
+  { name: '陈晓萌', role: '学生', cls: '软件 2202', on: true },
+  { name: '李文轩', role: '学生', cls: '软件 2202', on: false },
+  { name: '赵一鸣', role: '学生', cls: '网络 2201', on: true }
+]
+---
+
+<div class="overflow-hidden rounded-xl border border-line bg-white text-[12px] leading-normal text-body">
+  {
+    chrome && (
+      <div class="flex items-center gap-2 border-b border-line bg-soft px-3.5 py-2.5">
+        <span class="h-2.5 w-2.5 rounded-full bg-[#e0563f]/70" />
+        <span class="h-2.5 w-2.5 rounded-full bg-[#e0a93f]/70" />
+        <span class="h-2.5 w-2.5 rounded-full bg-[#3faf6b]/70" />
+        <span class="ml-3 truncate font-sans text-[11px] text-muted">
+          {type === 'exam' && '考试中 · examplatform.online'}
+          {type === 'grading' && '成绩分析 · examplatform.online'}
+          {type === 'dashboard' && '教务管理 · examplatform.online'}
+        </span>
+      </div>
+    )
+  }
+
+  {/* ============ 学生作答 ============ */}
+  {
+    type === 'exam' && (
+      <div>
+        <div class="flex items-center justify-between border-b border-line px-4 py-3">
+          <div class="font-medium text-ink">计算机网络 · 期末考试</div>
+          <span class="inline-flex items-center gap-1.5 rounded-md bg-[#fdf4e7] px-2 py-1 font-medium text-warn">
+            <Icon name="clock" class="h-3.5 w-3.5" />
+            <span class="tnum">47:12</span>
+          </span>
+        </div>
+        <div class="grid grid-cols-[1fr_136px]">
+          <div class="border-r border-line p-4">
+            <div class="flex items-center gap-2 text-[11px] text-muted">
+              <span class="rounded bg-accent-50 px-1.5 py-0.5 font-medium text-accent-600">单选题</span>
+              <span>第 3 / 12 题 · 5 分</span>
+            </div>
+            <p class="mt-3 font-medium leading-relaxed text-ink">
+              下列关于 TCP 三次握手的描述，正确的是？
+            </p>
+            <div class="mt-3 space-y-2">
+              <div class="flex items-center gap-2.5 rounded-lg border border-line px-3 py-2">
+                <span class="flex h-4 w-4 items-center justify-center rounded-full border border-line text-[10px] text-muted">A</span>
+                <span>第二次握手由客户端发起</span>
+              </div>
+              <div class="flex items-center gap-2.5 rounded-lg border border-accent-500 bg-accent-50/60 px-3 py-2 text-ink">
+                <span class="flex h-4 w-4 items-center justify-center rounded-full bg-accent-500 text-[10px] text-white">B</span>
+                <span class="font-medium">第三次握手可携带应用层数据</span>
+              </div>
+              <div class="flex items-center gap-2.5 rounded-lg border border-line px-3 py-2">
+                <span class="flex h-4 w-4 items-center justify-center rounded-full border border-line text-[10px] text-muted">C</span>
+                <span>握手过程不消耗序号</span>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <button class="rounded-lg border border-line px-3 py-1.5 text-muted">上一题</button>
+              <button class="rounded-lg bg-accent-500 px-4 py-1.5 font-medium text-white">下一题</button>
+            </div>
+          </div>
+          <div class="p-3">
+            <div class="text-[11px] font-medium text-ink">答题卡</div>
+            <div class="mt-2.5 grid grid-cols-4 gap-1.5">
+              {Array.from({ length: 12 }).map((_, i) => {
+                const done = [0, 1, 2, 4, 6, 9].includes(i)
+                const cur = i === 2
+                return (
+                  <span
+                    class={`flex h-6 items-center justify-center rounded text-[10px] tnum ${cur ? 'ring-2 ring-accent-400 bg-accent-500 text-white' : done ? 'bg-accent-500 text-white' : 'border border-line text-muted'}`}
+                  >
+                    {i + 1}
+                  </span>
+                )
+              })}
+            </div>
+            <button class="mt-3 w-full rounded-lg bg-positive py-1.5 text-[11px] font-medium text-white">
+              交卷
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  {/* ============ 成绩分析 ============ */}
+  {
+    type === 'grading' && (
+      <div class="p-4">
+        <div class="flex items-center justify-between">
+          <div class="font-medium text-ink">计算机网络 · 期末成绩分析</div>
+          <span class="rounded-md border border-line px-2 py-0.5 text-[11px] text-muted">应考 45</span>
+        </div>
+        <div class="mt-3 grid grid-cols-3 gap-2.5">
+          <div class="rounded-lg border border-line p-2.5">
+            <div class="text-[11px] text-muted">平均分</div>
+            <div class="tnum mt-0.5 text-xl text-ink">78.6</div>
+          </div>
+          <div class="rounded-lg border border-line p-2.5">
+            <div class="text-[11px] text-muted">及格率</div>
+            <div class="tnum mt-0.5 text-xl text-positive">86<span class="text-sm">%</span></div>
+          </div>
+          <div class="rounded-lg border border-line p-2.5">
+            <div class="text-[11px] text-muted">最高分</div>
+            <div class="tnum mt-0.5 text-xl text-ink">97</div>
+          </div>
+        </div>
+        <div class="mt-4 rounded-lg border border-line p-3">
+          <div class="text-[11px] text-muted">分数段分布</div>
+          <div class="mt-3 flex h-24 items-end justify-between gap-2">
+            {bars.map((b) => (
+              <div class="flex flex-1 flex-col items-center gap-1.5">
+                <div
+                  class={`w-full rounded-t ${b.fill ? 'bg-accent-500' : 'bg-accent-200'}`}
+                  style={`height:${b.h}%`}
+                />
+                <span class="text-[10px] text-muted">{b.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  {/* ============ 管理后台 ============ */}
+  {
+    type === 'dashboard' && (
+      <div class="grid grid-cols-[120px_1fr]">
+        <div class="bg-ink p-3 text-[11px]">
+          <div class="px-1.5 font-medium text-white/90">教务管理</div>
+          <div class="mt-3 space-y-1">
+            <div class="rounded-md bg-white/12 px-2 py-1.5 text-white">用户管理</div>
+            <div class="px-2 py-1.5 text-white/55">专业管理</div>
+            <div class="px-2 py-1.5 text-white/55">班级管理</div>
+            <div class="px-2 py-1.5 text-white/55">科目管理</div>
+            <div class="px-2 py-1.5 text-white/55">任课关系</div>
+          </div>
+        </div>
+        <div class="p-3.5">
+          <div class="grid grid-cols-4 gap-2">
+            {[
+              { k: '用户', v: '316' },
+              { k: '班级', v: '14' },
+              { k: '科目', v: '23' },
+              { k: '考试', v: '48' }
+            ].map((s) => (
+              <div class="rounded-lg border border-line p-2">
+                <div class="text-[10px] text-muted">{s.k}</div>
+                <div class="tnum mt-0.5 text-base text-ink">{s.v}</div>
+              </div>
+            ))}
+          </div>
+          <div class="mt-3 overflow-hidden rounded-lg border border-line">
+            <div class="grid grid-cols-[1.2fr_0.8fr_1fr_0.6fr] bg-soft px-3 py-1.5 text-[10px] text-muted">
+              <span>姓名</span><span>角色</span><span>班级</span><span>状态</span>
+            </div>
+            {users.map((u) => (
+              <div class="grid grid-cols-[1.2fr_0.8fr_1fr_0.6fr] items-center border-t border-line px-3 py-1.5 text-[11px]">
+                <span class="text-ink">{u.name}</span>
+                <span class="text-muted">{u.role}</span>
+                <span class="text-muted">{u.cls}</span>
+                <span class={u.on ? 'text-positive' : 'text-muted'}>{u.on ? '● 启用' : '○ 停用'}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+</div>

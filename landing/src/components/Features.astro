@@ -1,0 +1,101 @@
+---
+import { FEATURES } from '../consts'
+import Icon from './Icon.astro'
+
+const primary = FEATURES.find((f) => f.primary)!
+const rest = FEATURES.filter((f) => !f.primary)
+---
+
+<section id="features" class="border-b border-line bg-soft">
+  <div class="mx-auto max-w-[1120px] px-6 py-24">
+    <div class="reveal max-w-2xl">
+      <span class="text-[13px] font-medium text-muted">功能</span>
+      <h2 class="mt-3 text-[2rem] leading-tight md:text-[2.35rem]">
+        一条考试流水线，<span class="text-accent-600">从出题到成绩</span>
+      </h2>
+      <p class="mt-4 text-[15px] leading-[1.8] text-body">
+        六块能力围绕“防作弊作答”这条主线展开，下面这块是它的运行时状态。
+      </p>
+    </div>
+
+    <!-- bento：主功能大卡 + 混合跨度次卡 -->
+    <div class="mt-12 grid gap-4 lg:grid-cols-6">
+      <!-- 主功能 -->
+      <article class="reveal rounded-2xl border border-line bg-white p-7 lg:col-span-6 lg:p-9">
+        <div class="grid gap-8 lg:grid-cols-[1fr_0.92fr] lg:items-center">
+          <div>
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent-500 text-white">
+              <Icon name={primary.icon} class="h-5 w-5" />
+            </span>
+            <h3 class="mt-5 text-[1.5rem] text-ink">{primary.title}</h3>
+            <p class="mt-1.5 text-[15px] font-medium text-accent-600">{primary.benefit}</p>
+            <ul class="mt-5 space-y-2.5">
+              {
+                primary.points.map((pt) => (
+                  <li class="flex items-start gap-2.5 text-[14.5px] leading-relaxed text-body">
+                    <Icon name="check" class="mt-1 h-4 w-4 flex-none text-accent-500" />
+                    <span>{pt}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+
+          <!-- 运行时状态面板（原创、与防作弊主线呼应） -->
+          <div class="rounded-xl border border-line bg-soft p-4">
+            <div class="flex items-center justify-between text-[12px]">
+              <span class="font-medium text-ink">考试运行时</span>
+              <span class="inline-flex items-center gap-1.5 rounded-md bg-[#fdf4e7] px-2 py-0.5 font-medium text-warn">
+                <Icon name="clock" class="h-3.5 w-3.5" /><span class="tnum">47:12</span>
+              </span>
+            </div>
+            <dl class="mt-3 space-y-px overflow-hidden rounded-lg border border-line text-[12.5px]">
+              <div class="flex items-center justify-between bg-white px-3 py-2">
+                <dt class="text-muted">全屏状态</dt>
+                <dd class="font-medium text-positive">已进入</dd>
+              </div>
+              <div class="flex items-center justify-between bg-white px-3 py-2">
+                <dt class="text-muted">切屏次数</dt>
+                <dd class="tnum font-medium text-ink">0</dd>
+              </div>
+              <div class="flex items-center justify-between bg-white px-3 py-2">
+                <dt class="text-muted">自动暂存</dt>
+                <dd class="font-medium text-positive">刚刚 · 第 6 次</dd>
+              </div>
+              <div class="flex items-center justify-between bg-white px-3 py-2">
+                <dt class="text-muted">剩余时间</dt>
+                <dd class="font-medium text-ink">服务端核算</dd>
+              </div>
+            </dl>
+            <p class="mt-3 text-[11.5px] leading-relaxed text-muted">
+              到 00:00 由后端强制收卷，客户端改本地时间无效。
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 次功能：前三个 col-span-2，后两个 col-span-3，形成非对称节奏 -->
+      {
+        rest.map((f, i) => (
+          <article
+            class={`reveal rounded-2xl border border-line bg-white p-6 transition-colors duration-200 hover:border-ink/15 ${i >= 3 ? 'lg:col-span-3' : 'lg:col-span-2'}`}
+          >
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-line text-accent-600">
+              <Icon name={f.icon} class="h-[18px] w-[18px]" />
+            </span>
+            <h3 class="mt-4 text-[1.05rem] text-ink">{f.title}</h3>
+            <p class="mt-1 text-[13px] font-medium text-accent-600">{f.benefit}</p>
+            <ul class="mt-3.5 space-y-2">
+              {f.points.map((pt) => (
+                <li class="flex items-start gap-2 text-[13.5px] leading-relaxed text-body">
+                  <Icon name="check" class="mt-1 h-3.5 w-3.5 flex-none text-muted" />
+                  <span>{pt}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,931 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "在线考试系统 接口测试",
+		"description": "## 在线考试系统 RESTful API 接口测试\n\n**版本**：v1.0  \n**作者**：陶展  \n**最后更新**：2026-04-30\n\n### 测试范围\n- 20 个核心接口（覆盖 Auth / Profile / User / Class / Question / Paper / Exam / StudentExam / Marking / Score 10 个模块）\n- 60+ 测试断言\n- 三类用例：✅ 正向 / ❌ 反向 / 🔒 鉴权\n\n### 前置条件\n1. 后端运行中：`http://localhost:8081`\n2. 数据库 `online_exam_system` 已初始化\n3. 测试账号存在：`admin` / `luweizhong` / `taozhan`，密码均为 `12345678`\n\n### 执行方式\n- **GUI**：Postman → Runner → Run Collection\n- **CLI**：`newman run exam-system.postman_collection.json -e exam-system.postman_environment.json -r htmlextra,cli`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "📋 Setup · 前置准备",
+			"description": "登录获取 3 个角色的 Token，并准备测试数据 ID（examId / paperId 等）。\n\n**必须先跑这个文件夹**，后续所有用例依赖这里设置的环境变量。",
+			"item": [
+				{
+					"name": "✅ Setup-1 · ADMIN 登录获取 Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 状态码为 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 code=200 (成功)', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回 token 字段', () => pm.expect(json.data).to.have.property('token').that.is.a('string').and.not.empty);",
+									"pm.test('返回 userInfo.roleCode = ADMIN', () => pm.expect(json.data.userInfo.roleCode).to.equal('ADMIN'));",
+									"pm.test('响应时间 < 1000ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));",
+									"pm.environment.set('adminToken', json.data.token);",
+									"console.log('✅ adminToken 已保存');"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{adminUser}}\",\n  \"password\": \"{{adminPass}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "✅ Setup-2 · TEACHER 登录获取 Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('登录成功 code=200', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('roleCode = TEACHER', () => pm.expect(json.data.userInfo.roleCode).to.equal('TEACHER'));",
+									"pm.environment.set('teacherToken', json.data.token);",
+									"console.log('✅ teacherToken 已保存');"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{teacherUser}}\",\n  \"password\": \"{{teacherPass}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "✅ Setup-3 · STUDENT 登录获取 Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('登录成功 code=200', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('roleCode = STUDENT', () => pm.expect(json.data.userInfo.roleCode).to.equal('STUDENT'));",
+									"pm.environment.set('studentToken', json.data.token);",
+									"console.log('✅ studentToken 已保存');"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{studentUser}}\",\n  \"password\": \"{{studentPass}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "📌 Setup-4 · 获取已有考试 ID（用于后续测试）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('返回试卷分页数据', () => pm.expect(json.data).to.have.property('records'));",
+									"if (json.data.records && json.data.records.length > 0) {",
+									"    pm.environment.set('paperId', json.data.records[0].id);",
+									"    console.log('✅ paperId 已保存:', json.data.records[0].id);",
+									"} else {",
+									"    console.warn('⚠️ 没有现成试卷，POST /paper/add 用例会创建一个');",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/paper/list?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "paper", "list"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "1️⃣ 认证模块 (Auth)",
+			"description": "登录认证 + Token 管理 + 验证码",
+			"item": [
+				{
+					"name": "✅ GET 验证码 · 公开接口",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回 captchaKey 字段', () => pm.expect(json.data).to.have.property('captchaKey'));",
+									"pm.test('返回 captchaImage（Base64）', () => pm.expect(json.data.captchaImage).to.match(/^data:image\\/png;base64,/));",
+									"pm.test('响应时间 < 500ms', () => pm.expect(pm.response.responseTime).to.be.below(500));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/captcha",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "captcha"]
+						}
+					}
+				},
+				{
+					"name": "❌ POST /login · 反向 · 错误密码",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200（业务异常用 code=409）', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 code=409', () => pm.expect(json.code).to.equal(409));",
+									"pm.test('错误信息包含「用户名或密码错误」', () => pm.expect(json.message).to.include('用户名或密码错误'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"nonexistent_test_user_xyz\",\n  \"password\": \"any_wrong_password\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "❌ POST /login · 反向 · 缺少参数",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200 或 400', () => pm.expect(pm.response.code).to.be.oneOf([200, 400]));",
+									"const json = pm.response.json();",
+									"pm.test('业务码非 0（拒绝请求）', () => pm.expect(json.code).to.not.equal(200));",
+									"pm.test('返回错误提示', () => pm.expect(json.message).to.exist.and.not.be.empty);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "✅ GET /info · 正向 · 当前用户信息",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回用户信息', () => pm.expect(json.data).to.have.property('username'));",
+									"pm.test('用户名 = admin', () => pm.expect(json.data.username).to.equal('admin'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/info",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "info"]
+						}
+					}
+				},
+				{
+					"name": "🔒 GET /info · 鉴权 · 无 Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 401 Unauthorized', () => pm.response.to.have.status(401));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/info",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "info"]
+						}
+					}
+				},
+				{
+					"name": "🔒 GET /info · 鉴权 · 错误 Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 401 Unauthorized', () => pm.response.to.have.status(401));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer invalid_jwt_token_xxxxxx" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/info",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "info"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2️⃣ 个人资料 (Profile)",
+			"description": "已登录用户的个人信息查看",
+			"item": [
+				{
+					"name": "✅ GET /profile/info · 个人资料",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回 username', () => pm.expect(json.data).to.have.property('username'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/profile/info",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "profile", "info"]
+						}
+					}
+				},
+				{
+					"name": "🔒 GET /profile/info · 鉴权 · 无 Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 401', () => pm.response.to.have.status(401));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/profile/info",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "profile", "info"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3️⃣ 用户管理 (User · ADMIN)",
+			"description": "管理员管理用户的接口",
+			"item": [
+				{
+					"name": "✅ GET /user/list · ADMIN 分页查用户",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回分页数据', () => pm.expect(json.data).to.have.property('records'));",
+									"pm.test('records 是数组', () => pm.expect(json.data.records).to.be.an('array'));",
+									"pm.test('total 字段存在', () => pm.expect(json.data).to.have.property('total'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/user/list?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "user", "list"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "🔒 GET /user/list · 鉴权 · STUDENT 越权访问",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 状态码为 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 403 (无权限)', () => pm.expect(json.code).to.equal(403));",
+									"pm.test('错误信息含「无权限」', () => pm.expect(json.message).to.include('无权限'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/user/list?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "user", "list"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4️⃣ 班级管理 (Class · ADMIN)",
+			"item": [
+				{
+					"name": "✅ GET /class/list · 班级列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回分页数据', () => pm.expect(json.data).to.have.property('records'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/class/list?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "class", "list"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "5️⃣ 题库 (Question · TEACHER)",
+			"item": [
+				{
+					"name": "✅ GET /question/list · 分页查题",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回分页数据', () => pm.expect(json.data).to.have.property('records'));",
+									"if (json.data.records && json.data.records.length > 0) {",
+									"    pm.environment.set('questionId', json.data.records[0].id);",
+									"    console.log('✅ questionId 已保存:', json.data.records[0].id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/question/list?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "question", "list"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "✅ GET /question/{id} · 题详情",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回题目数据', () => pm.expect(json.data).to.have.property('id'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/question/{{questionId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "question", "{{questionId}}"]
+						}
+					}
+				},
+				{
+					"name": "🔒 GET /question/list · 鉴权 · STUDENT 越权",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 状态码为 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 403 (无权限)', () => pm.expect(json.code).to.equal(403));",
+									"pm.test('错误信息含「无权限」', () => pm.expect(json.message).to.include('无权限'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/question/list?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "question", "list"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "6️⃣ 试卷 (Paper · TEACHER)",
+			"item": [
+				{
+					"name": "✅ GET /paper/list · 试卷列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回分页数据', () => pm.expect(json.data).to.have.property('records'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/paper/list?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "paper", "list"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "✅ GET /paper/{id} · 试卷详情",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (!pm.environment.get('paperId')) {",
+									"    console.warn('⚠️ paperId 未设置，跳过此用例');",
+									"    return;",
+									"}",
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回 paperName', () => pm.expect(json.data).to.have.property('paperName'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/paper/{{paperId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "paper", "{{paperId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "7️⃣ 考试 (Exam · TEACHER)",
+			"item": [
+				{
+					"name": "✅ GET /exam/list · 考试列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回分页数据', () => pm.expect(json.data).to.have.property('records'));",
+									"if (json.data.records && json.data.records.length > 0) {",
+									"    pm.environment.set('examId', json.data.records[0].id);",
+									"    console.log('✅ examId 已保存:', json.data.records[0].id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/exam/list?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "exam", "list"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "🔒 GET /exam/list · 鉴权 · 无 Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 401 Unauthorized', () => pm.response.to.have.status(401));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/exam/list?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "exam", "list"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "8️⃣ 学生考试 (StudentExam · STUDENT)",
+			"item": [
+				{
+					"name": "✅ GET /student/exam/my-exams · 我的考试",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回考试列表', () => pm.expect(json.data).to.be.an('array'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/exam/my-exams",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "student", "exam", "my-exams"]
+						}
+					}
+				},
+				{
+					"name": "🔒 GET /student/exam/my-exams · 鉴权 · TEACHER 越权",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 状态码为 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 403 (教师无法访问学生接口)', () => pm.expect(json.code).to.equal(403));",
+									"pm.test('错误信息含「无权限」', () => pm.expect(json.message).to.include('无权限'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/exam/my-exams",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "student", "exam", "my-exams"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "9️⃣ 阅卷 (Marking · TEACHER)",
+			"item": [
+				{
+					"name": "✅ GET /marking/list/{examId} · 待批改列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (!pm.environment.get('examId')) {",
+									"    console.warn('⚠️ examId 未设置，跳过此用例');",
+									"    return;",
+									"}",
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回数组', () => pm.expect(json.data).to.be.an('array'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/marking/list/{{examId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "marking", "list", "{{examId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔟 成绩 (Score)",
+			"item": [
+				{
+					"name": "✅ GET /score/my-scores · 学生查我的成绩",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"pm.test('返回分页数据', () => pm.expect(json.data).to.have.property('records'));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/score/my-scores?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "score", "my-scores"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "✅ GET /score/class/{examId} · 教师查班级成绩",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (!pm.environment.get('examId')) {",
+									"    console.warn('⚠️ examId 未设置，跳过此用例');",
+									"    return;",
+									"}",
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/score/class/{{examId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "score", "class", "{{examId}}"]
+						}
+					}
+				},
+				{
+					"name": "🔒 GET /score/my-scores · 鉴权 · 无 Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 401 Unauthorized', () => pm.response.to.have.status(401));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/score/my-scores?page=1&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "score", "my-scores"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🚪 Cleanup · 登出",
+			"item": [
+				{
+					"name": "✅ POST /auth/logout · ADMIN 登出",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test('业务码 0', () => pm.expect(json.code).to.equal(200));",
+									"console.log('✅ 测试结束，所有 Token 已登出');"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "logout"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		}
+	],
+	"variable": []
+}

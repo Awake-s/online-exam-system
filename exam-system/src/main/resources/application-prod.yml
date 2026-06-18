@@ -1,0 +1,181 @@
+# ============================================================
+# 生产环境配置 — 在线考试系统
+#
+# 权威依据：
+#   - Spring Boot 2.7 Production-ready Features
+#     https://docs.spring.io/spring-boot/docs/2.7.x/reference/html/actuator.html
+#   - Spring Boot Graceful Shutdown
+#     https://docs.spring.io/spring-boot/docs/2.7.x/reference/html/web.html#web.graceful-shutdown
+#
+# ⚠️ 安全基线：
+#   1. 所有密码/密钥默认值必须为空（${VAR:}），禁止硬编码，违反 = 密钥泄露
+#   2. 敏感配置必须通过环境变量注入（见 /etc/exam-system/secrets.env）
+#   3. Actuator 只暴露 health，show-details: never（不对匿名暴露细节）
+# ============================================================
+
+server:
+  port: 8081
+  # 优雅停机：收到 SIGTERM 后，新请求拒绝，进行中请求有 30s 处理时间
+  shutdown: graceful
+  tomcat:
+    # 线程池调优（2 核 4G 推荐值）
+    threads:
+      max: 200
+      min-spare: 20
+    accept-count: 100
+    max-connections: 10000
+    connection-timeout: 20000
+  # 错误信息不暴露给客户端（防信息泄露）
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+spring:
+  lifecycle:
+    # 优雅停机最大等待时长（与 systemd TimeoutStopSec 对齐）
+    timeout-per-shutdown-phase: 30s
+
+  datasource:
+    # characterEncoding 必须是 Java 字符集名（UTF-8），不能是 MySQL 字符集名（utf8mb4）
+    # MySQL 侧的字符集通过 connectionCollation 指定，服务端 character-set-server=utf8mb4
+    url: jdbc:mysql://127.0.0.1:3306/online_exam_system?useUnicode=true&characterEncoding=UTF-8&connectionCollation=utf8mb4_general_ci&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=false&useSSL=false
+    username: ${DB_USER:exam_app}
+    # ❗ 必须通过环境变量 DB_PASSWORD 注入
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 5000
+      validation-timeout: 3000
+      pool-name: ExamHikariPool
+      connection-test-query: SELECT 1
+
+  # Spring Boot 2.7.18 的 Redis 连接前缀是 spring.redis.*（spring.data.redis.* 是 3.0 才改的名，2.7 下不生效）
+  redis:
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    # ❗ 必须通过环境变量 REDIS_PASSWORD 注入
+    password: ${REDIS_PASSWORD:}
+    database: 0
+    timeout: 2000ms
+    connect-timeout: 2000ms
+    client-name: exam-system-prod
+    lettuce:
+      pool:
+        enabled: true
+        max-active: 16
+        max-idle: 8
+        min-idle: 2
+        max-wait: 2000ms
+        time-between-eviction-runs: 60000ms
+      shutdown-timeout: 100ms
+
+  # Multipart 上传限制（必须 ≤ Nginx client_max_body_size）
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+      file-size-threshold: 2MB
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+jwt:
+  # ❗ 必须通过环境变量 JWT_SECRET 注入（至少 32 字节 / 256 bits）
+  # 生成命令：openssl rand -base64 48
+  secret: ${JWT_SECRET:}
+  expiration: 86400000
+
+upload:
+  path: /opt/exam-system/uploads/
+
+# 百度语音识别（所有默认值已脱敏，禁止再硬编码）
+baidu:
+  speech:
+    app-id: ${BAIDU_APP_ID:}
+    api-key: ${BAIDU_API_KEY:}
+    secret-key: ${BAIDU_SECRET_KEY:}
+
+# ============================================================
+# CORS / WebSocket 允许域名白名单（生产必须精确，禁止通配）
+# 多个域名用英文逗号分隔
+# 示例：https://kimi888.xyz,https://kimi123.site,https://kimi666.online
+# ============================================================
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ORIGINS:https://kimi888.xyz,https://kimi123.site,https://kimi666.online}
+
+# 生产环境关闭 SQL 日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+# ============================================================
+# Actuator 生产配置
+# 权威依据：https://docs.spring.io/spring-boot/docs/2.7.x/reference/html/actuator.html
+#   - 仅暴露 health
+#   - show-details: never（不泄露内部组件状态给匿名访问）
+#   - 启用 liveness/readiness probes（K8s / 监控友好）
+# ============================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: never
+      show-components: never
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState
+        # Redis 是“非致命”依赖：连不上会降级到内存/DB（见 RedisConfig.java 与各业务 @Autowired(required=false)）。
+        # 因此 Redis 故障不得纳入 readiness —— 否则 Redis 一抖动就会让“能正常服务的应用”被判为不可用并触发上线回滚。
+        # Redis 实时状态仍可通过根端点 /actuator/health 与 RedisMonitor 观测，可观测性不受影响。
+        readiness:
+          include: readinessState,db
+  health:
+    defaults:
+      enabled: true
+    redis:
+      enabled: true
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+      threshold: 500MB
+
+# ============================================================
+# 日志配置
+# - 按天 + 按大小滚动
+# - 保留 30 天，总量上限 1GB
+# ============================================================
+logging:
+  level:
+    root: WARN
+    com.exam: INFO
+    org.apache.ibatis: WARN
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+  file:
+    name: /opt/exam-system/logs/exam-system.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n"
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      max-history: 30
+      total-size-cap: 1GB
+      file-name-pattern: /opt/exam-system/logs/exam-system.%d{yyyy-MM-dd}.%i.log
+      clean-history-on-start: false

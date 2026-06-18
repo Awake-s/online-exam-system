@@ -1,0 +1,75 @@
+---
+import { SITE, DEMO_ACCOUNTS } from '../consts'
+import Icon from './Icon.astro'
+import OmrCard from './OmrCard.astro'
+import SealLine from './SealLine.astro'
+---
+
+<section id="top" class="relative overflow-hidden border-b border-line">
+  <div class="mx-auto max-w-[1120px] px-6">
+    <SealLine label="密封线" class="pt-5" />
+
+    <div class="grid gap-14 pb-20 pt-12 md:pt-16 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-12">
+      <!-- 左：文案（偏宽） -->
+      <div>
+        <span class="inline-flex items-center gap-2 text-[13px] font-medium text-accent-600">
+          <span class="omr omr-on h-2 w-2"></span>
+          开源 · 面向高校的考试平台
+        </span>
+
+        <h1 class="mt-5 text-[2.7rem] leading-[1.18] md:text-[3.3rem]">
+          组织一场考试，<br />
+          从半天压到<span class="text-accent-600">十几分钟</span>。
+        </h1>
+
+        <p class="mt-6 max-w-[34rem] text-[17px] leading-[1.85] text-body">
+          题库、组卷、防作弊作答、自动阅卷、成绩分析、师生沟通跑在同一套系统里。学生在浏览器里全屏作答，客观题交卷即出分。
+        </p>
+
+        <div class="mt-9 flex flex-wrap items-center gap-3">
+          <a
+            href={SITE.demoUrl}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-2 rounded-lg bg-accent-500 px-5 py-3 text-[15px] font-medium text-white transition-colors duration-200 hover:bg-accent-600"
+          >
+            用 Demo 账号进系统
+            <Icon name="arrow-right" class="h-4 w-4" />
+          </a>
+          <a
+            href={SITE.githubUrl}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-2 rounded-lg border border-line bg-paper px-5 py-3 text-[15px] font-medium text-ink transition-colors duration-200 hover:border-ink/25"
+          >
+            <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.7.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5Z"
+              ></path>
+            </svg>
+            查看源码
+          </a>
+        </div>
+
+        <div class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-muted">
+          <span>体验账号</span>
+          {
+            DEMO_ACCOUNTS.map((a) => (
+              <span class="inline-flex items-center gap-1.5">
+                <span class="text-body">{a.role}</span>
+                <code class="rounded border border-line bg-soft px-1.5 py-0.5 font-mono text-[12px] text-body">
+                  {a.username} / {a.password}
+                </code>
+              </span>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- 右：准考证 + 答题卡（signature 主视觉） -->
+      <div class="reveal lg:pl-2">
+        <OmrCard />
+      </div>
+    </div>
+  </div>
+</section>

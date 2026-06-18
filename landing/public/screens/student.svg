@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" font-family="'PingFang SC','Microsoft YaHei',sans-serif">
+  <rect width="800" height="500" fill="#f1f5f9"/>
+  <!-- exam taking layout: top bar with timer -->
+  <rect x="0" y="0" width="800" height="56" fill="#ffffff"/>
+  <rect x="24" y="20" width="180" height="16" rx="8" fill="#0f172a"/>
+  <rect x="610" y="16" width="166" height="26" rx="13" fill="#fee2e2"/>
+  <text x="693" y="34" font-size="14" font-weight="700" fill="#dc2626" text-anchor="middle">⏱ 倒计时 58:24</text>
+  <!-- question card -->
+  <rect x="24" y="80" width="520" height="396" rx="12" fill="#ffffff"/>
+  <rect x="48" y="104" width="80" height="22" rx="6" fill="#eef2ff"/>
+  <text x="60" y="120" font-size="12" font-weight="600" fill="#3c6fff">单选题</text>
+  <rect x="48" y="146" width="460" height="12" rx="6" fill="#334155"/>
+  <rect x="48" y="170" width="380" height="12" rx="6" fill="#64748b"/>
+  <g>
+    <rect x="48" y="210" width="472" height="44" rx="8" fill="#f8fafc" stroke="#3c6fff" stroke-width="2"/>
+    <circle cx="74" cy="232" r="8" fill="#3c6fff"/>
+    <rect x="94" y="227" width="280" height="10" rx="5" fill="#475569"/>
+    <rect x="48" y="266" width="472" height="44" rx="8" fill="#f8fafc"/>
+    <circle cx="74" cy="288" r="8" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+    <rect x="94" y="283" width="240" height="10" rx="5" fill="#94a3b8"/>
+    <rect x="48" y="322" width="472" height="44" rx="8" fill="#f8fafc"/>
+    <circle cx="74" cy="344" r="8" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+    <rect x="94" y="339" width="260" height="10" rx="5" fill="#94a3b8"/>
+  </g>
+  <rect x="48" y="416" width="100" height="36" rx="8" fill="#e2e8f0"/>
+  <rect x="420" y="416" width="100" height="36" rx="8" fill="#3c6fff"/>
+  <!-- answer sheet -->
+  <rect x="560" y="80" width="216" height="396" rx="12" fill="#ffffff"/>
+  <rect x="584" y="104" width="100" height="14" rx="7" fill="#0f172a"/>
+  <g>
+    <rect x="584" y="136" width="32" height="32" rx="6" fill="#3c6fff"/>
+    <rect x="624" y="136" width="32" height="32" rx="6" fill="#3c6fff"/>
+    <rect x="664" y="136" width="32" height="32" rx="6" fill="#e2e8f0"/>
+    <rect x="704" y="136" width="32" height="32" rx="6" fill="#e2e8f0"/>
+    <rect x="584" y="176" width="32" height="32" rx="6" fill="#e2e8f0"/>
+    <rect x="624" y="176" width="32" height="32" rx="6" fill="#e2e8f0"/>
+    <rect x="664" y="176" width="32" height="32" rx="6" fill="#e2e8f0"/>
+    <rect x="704" y="176" width="32" height="32" rx="6" fill="#e2e8f0"/>
+  </g>
+  <rect x="584" y="424" width="152" height="36" rx="8" fill="#22c55e"/>
+  <text x="660" y="448" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">交卷</text>
+  <g>
+    <rect x="300" y="10" width="200" height="26" rx="13" fill="#3c6fff" opacity="0.92"/>
+    <text x="400" y="28" font-size="13" font-weight="600" fill="#fff" text-anchor="middle">学生端 · 替换为真实截图</text>
+  </g>
+</svg>

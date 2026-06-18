@@ -1,0 +1,20 @@
+{
+  "name": "exam-system-landing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "在线考试系统 · 产品营销落地页（Astro + Tailwind）",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.6.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "tailwindcss": "^4.1.14"
+  }
+}

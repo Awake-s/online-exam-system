@@ -1,0 +1,25 @@
+# Maven 构建产物
+target/
+bin/
+
+# Eclipse IDE
+.classpath
+.project
+.settings/
+.factorypath
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code / Windsurf
+.vscode/
+
+# JDT Language Server 自动生成
+Users/
+
+# 系统文件
+.DS_Store
+Thumbs.db

@@ -1,0 +1,125 @@
+# ============================================================
+# systemd 服务文件 — 在线考试系统后端
+#
+# 权威依据：
+#   - systemd.exec(5) 官方手册 / systemd-analyze security
+#   - OneUptime systemd Hardening Guide (2026)
+#     https://oneuptime.com/blog/post/2026-03-02-how-to-configure-systemd-service-hardening-on-ubuntu/view
+#   - freedesktop.org 系统硬化最佳实践
+#
+# 部署步骤：
+#   1. sudo cp exam-system.service /etc/systemd/system/
+#   2. sudo cp secrets.env.example /etc/exam-system/secrets.env
+#   3. sudo chmod 600 /etc/exam-system/secrets.env    ← 关键：仅 root 可读
+#   4. sudo vim /etc/exam-system/secrets.env          ← 填入真实密码
+#   5. sudo systemctl daemon-reload
+#   6. sudo systemctl enable exam-system
+#   7. sudo systemctl start exam-system
+#
+# 安全验证：sudo systemd-analyze security exam-system  （目标 ≤ 4.0 SAFE）
+# ============================================================
+[Unit]
+Description=Online Exam System Backend (Spring Boot)
+Documentation=https://github.com/your-org/exam-system
+After=network.target mysql.service redis-server.service
+Wants=mysql.service redis-server.service
+# 启动限流（StartLimitIntervalSec/StartLimitBurst 必须在 [Unit] 不是 [Service]）
+StartLimitIntervalSec=600
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=exam
+Group=exam
+WorkingDirectory=/opt/exam-system
+
+# ---------- 环境变量文件（敏感信息分离） ----------
+# 权限必须为 600（仅 root 可读），不随服务文件一起提交到 Git
+EnvironmentFile=/etc/exam-system/secrets.env
+
+# ---------- JVM 参数（自适应任意内存：2G/4G/8G+ 通用） ----------
+# -XX:MaxRAMPercentage=35.0：堆最大占系统内存 35%
+#   2G 机器 → 堆 ≈ 700M（给 MySQL/Redis/OS 留 1.3G）
+#   4G 机器 → 堆 ≈ 1.4G（充分利用）
+#   8G 机器 → 堆 ≈ 2.8G（高并发场景）
+# -XX:InitialRAMPercentage=25.0：初始堆占 25%（启动即预分配，避免频繁扩容）
+# -XX:MinRAMPercentage=25.0：小内存机器的下限（JDK 11+ 生效）
+# -XX:+UseContainerSupport：容器/cgroup 环境下生效（JDK 10+ 默认开，显式声明明确意图）
+# 权威依据：https://docs.oracle.com/en/java/javase/17/gctuning/ergonomics.html
+ExecStart=/usr/bin/java \
+    -XX:InitialRAMPercentage=25.0 \
+    -XX:MinRAMPercentage=25.0 \
+    -XX:MaxRAMPercentage=35.0 \
+    -XX:+UseContainerSupport \
+    -XX:+UseG1GC \
+    -XX:MaxGCPauseMillis=200 \
+    -XX:+HeapDumpOnOutOfMemoryError \
+    -XX:HeapDumpPath=/opt/exam-system/logs/heapdump.hprof \
+    -XX:+ExitOnOutOfMemoryError \
+    -Duser.timezone=Asia/Shanghai \
+    -Dfile.encoding=UTF-8 \
+    -Dspring.profiles.active=prod \
+    -jar /opt/exam-system/exam-system-1.0.0.jar
+
+# ---------- 优雅停机（配合 application-prod.yml 的 server.shutdown=graceful） ----------
+ExecStop=/bin/kill -SIGTERM $MAINPID
+SuccessExitStatus=143
+KillSignal=SIGTERM
+TimeoutStopSec=45
+TimeoutStartSec=120
+
+# ---------- 自动重启 ----------
+Restart=on-failure
+RestartSec=10
+
+# ---------- 资源限制（防止异常 JVM 拖垮系统） ----------
+LimitNOFILE=65535
+LimitNPROC=4096
+TasksMax=2048
+
+# ---------- 安全硬化（systemd sandboxing） ----------
+# 参考：systemd-analyze security
+# ⚠️ 注意：JVM 需要 JIT 可写可执行内存，不能启用 MemoryDenyWriteExecute
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+RemoveIPC=yes
+
+# 仅允许写入以下路径（应用目录 + systemd 临时目录）
+ReadWritePaths=/opt/exam-system
+# 如需允许 /tmp 访问，取消下面一行注释
+# ReadWritePaths=/tmp
+
+# 网络限制：只允许 IPv4/IPv6/本地 socket
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+# 系统调用过滤：拒绝危险调用（@privileged + @raw-io）
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+SystemCallArchitectures=native
+SystemCallErrorNumber=EPERM
+
+# Capability 最小权限（Java 应用完全不需要特殊能力）
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+# ---------- 日志输出 ----------
+StandardOutput=append:/opt/exam-system/logs/stdout.log
+StandardError=append:/opt/exam-system/logs/stderr.log
+SyslogIdentifier=exam-system
+
+[Install]
+WantedBy=multi-user.target

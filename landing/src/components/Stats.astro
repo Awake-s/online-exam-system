@@ -1,0 +1,25 @@
+---
+import { STATS } from '../consts'
+---
+
+<section class="border-b border-line bg-soft">
+  <div class="mx-auto max-w-[1120px] px-6 py-14">
+    <p class="text-[13px] text-muted">
+      数据来自 JMeter 5.6.3 全场景压测报告 v2.0 与生产环境配置实测
+    </p>
+    <div class="mt-7 grid grid-cols-2 gap-y-8 sm:grid-cols-4 sm:gap-y-0 sm:divide-x sm:divide-line">
+      {
+        STATS.map((s, i) => (
+          <div class={`reveal ${i > 0 ? 'sm:pl-7' : ''} pr-4`}>
+            <div class="flex items-baseline gap-1">
+              <span class="tnum text-[2.4rem] leading-none text-ink">{s.num}</span>
+              <span class="text-sm font-medium text-accent-600">{s.unit}</span>
+            </div>
+            <div class="mt-2 text-[13.5px] font-medium text-ink">{s.label}</div>
+            <div class="mt-1 text-[12px] leading-relaxed text-muted">{s.desc}</div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

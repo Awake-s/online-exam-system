@@ -1,0 +1,34 @@
+---
+import { PAINS } from '../consts'
+import Icon from './Icon.astro'
+---
+
+<section class="mx-auto grid max-w-[1120px] gap-12 px-6 py-24 lg:grid-cols-[5fr_7fr] lg:gap-16">
+  <!-- 左：标题列 -->
+  <div class="reveal lg:pt-2">
+    <span class="text-[13px] font-medium text-muted">为什么要做这套系统</span>
+    <h2 class="mt-3 text-[2rem] leading-tight md:text-[2.25rem]">
+      纸笔加 Excel 的考试，<br class="hidden sm:block" />把老师拖在重复劳动里
+    </h2>
+    <p class="mt-5 max-w-md text-[15px] leading-[1.8] text-body">
+      下面五件事，几乎每个组织过考试的老师都遇到过。这套系统就是冲着它们去的。
+    </p>
+  </div>
+
+  <!-- 右：痛点列表（非卡片网格，纵向条目） -->
+  <ul class="reveal divide-y divide-line border-y border-line">
+    {
+      PAINS.map((p) => (
+        <li class="flex gap-4 py-5">
+          <span class="mt-0.5 flex h-9 w-9 flex-none items-center justify-center rounded-lg border border-line text-muted">
+            <Icon name={p.icon} class="h-[18px] w-[18px]" />
+          </span>
+          <div>
+            <h3 class="text-[15px] font-semibold text-ink">{p.title}</h3>
+            <p class="mt-1 text-[14px] leading-relaxed text-body">{p.text}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</section>

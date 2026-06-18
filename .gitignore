@@ -1,0 +1,111 @@
+# ========================
+# 后端 (exam-system)
+# ========================
+
+# Maven 构建产物
+exam-system/target/
+exam-system/bin/
+
+# 运行时上传文件（可选保留）
+# exam-system/uploads/
+
+# ========================
+# 前端 (art-design-pro-ui)
+# ========================
+
+# 依赖目录
+art-design-pro-ui/node_modules/
+
+# 构建产物
+art-design-pro-ui/dist/
+art-design-pro-ui/dist-ssr/
+
+# 自动生成文件
+art-design-pro-ui/src/types/import/auto-imports.d.ts
+art-design-pro-ui/src/types/import/components.d.ts
+art-design-pro-ui/.auto-import.json
+
+# 本地环境覆盖
+*.local
+
+# ========================
+# IDE 配置（所有人各自生成）
+# ========================
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Eclipse
+.classpath
+.project
+.settings/
+.factorypath
+
+# VS Code / Windsurf
+.vscode/
+.windsurf/
+
+# JDT Language Server
+**/bin/
+**/Users/
+
+# ========================
+# 部署凭据（严禁提交 Git）
+# ========================
+
+# 历史目录名（兼容）
+deploy/密码/
+deploy/credentials/
+
+# 当前目录名（2026-04 整理后）
+deploy/凭据/
+
+# 凭据文件格式（任何目录下）
+*-credentials-*.txt
+*生产凭据*.txt
+secrets.env
+
+# ========================
+# 系统文件
+# ========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ========================
+# 开源上传补充（2026-06）
+# ========================
+
+# 所有 node_modules（含 art-design-pro-ui、landing、docs-site）
+**/node_modules/
+
+# 运行时上传文件（用户隐私）
+exam-system/uploads/
+
+# 所有构建产物
+**/dist/
+**/target/
+docs-site/.vitepress/dist/
+docs-site/.vitepress/cache/
+
+# 文档里的 demo 工程与个人学业材料（不公开，保留在本地磁盘）
+doc/exam-ui/
+doc/论文/
+doc/答辩PPT/
+doc/答辩准备/
+doc/项目审查/
+doc/项目初期方案/
+doc/题库Excel/
+
+# 第三方与个人隐私文件（非项目内容）
+skills/
+generate_resume.py
+陶展-简历.pdf
+
+# 本操作手册目录（含密钥位置清单）
+deploy/06-开源上传/
