@@ -106,14 +106,16 @@ baidu:
 # ============================================================
 # CORS / WebSocket 允许域名白名单（生产必须精确，禁止通配）
 # 多个域名用英文逗号分隔
-# 说明：当前正式域名 examplatform.online 备案中，临时通过公网 IP 访问。
-#       备案完成后，把 http://124.222.21.219 换成 https://examplatform.online 即可。
-# 示例：http://124.222.21.219,https://examplatform.online
+#
+# ⚠ 过渡期（HTTPS 上线中）白名单同时包含 HTTP 和 HTTPS，避免任何访问方式被拦截：
+#   - HTTP 裸IP：备案/HTTPS 未就绪时的访问入口
+#   - HTTPS 域名：HTTPS 上线后的正式入口
+# HTTPS 稳定运行后，可在服务器 secrets.env 移除 http:// 条目收紧白名单
 # ============================================================
 app:
   cors:
-    # 默认值含公网IP（备案过渡期）；生产真实值由服务器 /etc/exam-system/secrets.env 的 APP_CORS_ORIGINS 覆盖
-    allowed-origins: ${APP_CORS_ORIGINS:http://124.222.21.219}
+    # 默认值含过渡期全部入口；生产真实值由服务器 /etc/exam-system/secrets.env 的 APP_CORS_ORIGINS 覆盖
+    allowed-origins: ${APP_CORS_ORIGINS:http://124.222.21.219,http://examplatform.online,http://www.examplatform.online,https://examplatform.online,https://www.examplatform.online}
 
 # 生产环境关闭 SQL 日志
 mybatis-plus:
