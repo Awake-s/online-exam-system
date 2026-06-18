@@ -12,7 +12,9 @@ import { defineConfig } from 'vitepress'
 const GITHUB_USER = 'Awake-s' // GitHub 用户名
 const REPO = 'online-exam-system' // 仓库名
 // 在线体验地址（已部署的后台系统），访客点击「在线体验」会跳到这里
-const LIVE_URL = 'https://kimi888.xyz'
+// 域名 examplatform.online 备案完成后，把这里换成 https://examplatform.online 即可
+// （Nginx server_name 通配 _，IP 与域名命中同一 server，前端/后端零改动）
+const LIVE_URL = 'http://124.222.21.219'
 
 export default defineConfig({
   lang: 'zh-CN',

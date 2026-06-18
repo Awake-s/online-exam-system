@@ -11,7 +11,7 @@ hero:
   actions:
     - theme: brand
       text: 在线体验
-      link: https://kimi888.xyz
+      link: http://124.222.21.219
     - theme: alt
       text: GitHub 源码
       link: https://github.com/Awake-s/online-exam-system

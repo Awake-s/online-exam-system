@@ -35,7 +35,8 @@ landing/
 ## ⚠️ 上线前必做替换清单（均在 `src/consts.ts`）
 
 - [x] `SITE.githubUrl`：已改为真实仓库 `https://github.com/Awake-s/online-exam-system`
-- [x] `SITE.demoUrl`：已改为 `https://kimi888.xyz`（确保 Demo 已配 HTTPS，避免落地页 HTTPS 托管时触发「混合内容」拦截）
+- [x] `SITE.demoUrl`：已改为 `http://124.222.21.219`（裸 IP，能直接访问已部署的后台）。**域名 `examplatform.online` 备案完成后，把这里换成 `https://examplatform.online` 即可**（Nginx 通配，前端/后端零改动）
+- [ ] `SITE.demoUrl` 的 CORS：后端 `APP_CORS_ORIGINS`（服务器 `/etc/exam-system/secrets.env`）需加入 `http://124.222.21.219`，否则访客登录时 API 跨域被拦截
 - [ ] `DEMO_ACCOUNTS`：当前是种子数据真实账号；对外公开建议改为只读/可重置专用账号
 - [ ] `public/screens/{admin,teacher,student}.svg`：替换为**真实三端界面截图**（PNG/WebP 亦可，记得同步改 `consts.ts` 里的 `shot` 路径）。这是落地页从「普通」变「可信」的关键一步
 - [ ] 可选：录制一段 10–30s 考试作答 GIF 放到 Hero 或功能区

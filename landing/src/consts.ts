@@ -11,8 +11,9 @@ export const SITE = {
   description:
     '一站式在线考试平台：题库管理、智能组卷、防作弊在线考试、自动阅卷、成绩分析与师生实时沟通。Spring Boot 2.7 + Vue 3 + MySQL + Redis。',
   // 在线体验地址（已部署的后台系统）
-  // ⚠️ 落地页若用 HTTPS 托管，Demo 也必须用 HTTPS，否则触发“混合内容”拦截。
-  demoUrl: 'https://kimi888.xyz',
+  // ⚠️ 域名 examplatform.online 备案完成后，把这里换成 https://examplatform.online 即可
+  // （Nginx server_name 为通配 _，IP 与域名命中同一 server，前端/后端零改动）
+  demoUrl: 'http://124.222.21.219',
   // GitHub 源码仓库
   githubUrl: 'https://github.com/Awake-s/online-exam-system',
   docsUrl: '/docs/', // VitePress 文档区（保留复用）
