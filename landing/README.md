@@ -34,8 +34,8 @@ landing/
 
 ## ⚠️ 上线前必做替换清单（均在 `src/consts.ts`）
 
-- [ ] `SITE.githubUrl`：改为真实 GitHub 仓库地址（当前为 `your-name` 占位）
-- [ ] `SITE.demoUrl`：在线体验地址。**当前为 HTTP，落地页一旦用 HTTPS 托管会触发浏览器「混合内容」拦截**，请给 Demo 配 HTTPS（Nginx + Let's Encrypt 或 Cloudflare）后改为 `https://`
+- [x] `SITE.githubUrl`：已改为真实仓库 `https://github.com/Awake-s/online-exam-system`
+- [x] `SITE.demoUrl`：已改为 `https://kimi888.xyz`（确保 Demo 已配 HTTPS，避免落地页 HTTPS 托管时触发「混合内容」拦截）
 - [ ] `DEMO_ACCOUNTS`：当前是种子数据真实账号；对外公开建议改为只读/可重置专用账号
 - [ ] `public/screens/{admin,teacher,student}.svg`：替换为**真实三端界面截图**（PNG/WebP 亦可，记得同步改 `consts.ts` 里的 `shot` 路径）。这是落地页从「普通」变「可信」的关键一步
 - [ ] 可选：录制一段 10–30s 考试作答 GIF 放到 Hero 或功能区
