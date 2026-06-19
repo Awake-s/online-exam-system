@@ -2,9 +2,9 @@
 
 # 🎓 在线考试系统
 
-**面向高校与教育培训机构的一站式在线考试平台**
+**个人全栈技术实践项目 · 在线考试系统**
 
-覆盖题库管理 · 智能组卷 · 在线考试 · 自动阅卷 · 成绩分析 · 即时通讯的完整考试业务闭环
+以考试业务为载体的 Spring Boot + Vue 3 全栈工程实践，覆盖题库管理 · 智能组卷 · 在线考试 · 自动阅卷 · 成绩分析 · 即时通讯完整闭环，所有数据均为演示数据
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.7.18-brightgreen.svg)](https://spring.io/projects/spring-boot)

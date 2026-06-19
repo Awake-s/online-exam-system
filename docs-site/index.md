@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: 在线考试系统
-  text: 一站式在线考试平台
-  tagline: 面向高校与教育培训机构，覆盖题库管理、智能组卷、在线考试、自动阅卷、成绩分析、即时通讯的完整考试业务闭环。
+  text: 个人全栈技术实践项目
+  tagline: 以考试业务为载体的 Spring Boot + Vue 3 全栈工程实践，覆盖题库管理、智能组卷、在线考试、自动阅卷、成绩分析、即时通讯完整闭环。所有数据均为演示数据。
   image:
     src: /hero-architecture.svg
     alt: 在线考试系统架构

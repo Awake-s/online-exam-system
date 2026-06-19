@@ -7,9 +7,9 @@
 export const SITE = {
   name: '在线考试系统',
   // 一句话定位：说“做什么 / 给谁”，不玩玄乎口号
-  title: '在线考试系统 · 面向高校的在线考试与考务平台',
+  title: '在线考试系统 · 个人全栈技术实践项目',
   description:
-    '一站式在线考试平台：题库管理、智能组卷、防作弊在线考试、自动阅卷、成绩分析与师生实时沟通。Spring Boot 2.7 + Vue 3 + MySQL + Redis。',
+    '以考试业务为载体的 Spring Boot + Vue 3 全栈工程实践：题库管理、智能组卷、防作弊在线考试、自动阅卷、成绩分析与师生实时沟通。所有数据均为演示数据。',
   // 在线体验地址（已部署的后台系统）
   // ⚠️ 域名 examplatform.online 备案完成后，把这里换成 https://examplatform.online 即可
   // （Nginx server_name 为通配 _，IP 与域名命中同一 server，前端/后端零改动）

@@ -20,7 +20,7 @@ export default defineConfig({
   lang: 'zh-CN',
   title: '在线考试系统',
   description:
-    '面向高校与教育培训机构的一站式在线考试平台：智能题库管理、灵活组卷、在线考试、自动阅卷、成绩分析、即时通讯通知。Spring Boot + Vue3 + MySQL + Redis。',
+    '个人全栈技术实践项目：以考试业务为载体的 Spring Boot + Vue 3 工程实践，涵盖智能题库管理、灵活组卷、在线考试、自动阅卷、成绩分析、即时通讯通知。所有数据均为演示数据。',
   // GitHub Pages 项目站点需要子路径；自定义域名根路径时改为 '/'
   base: '/online-exam-system/',
   lastUpdated: true,
@@ -35,7 +35,7 @@ export default defineConfig({
       'meta',
       {
         property: 'og:description',
-        content: '一站式在线考试平台：题库管理 · 智能组卷 · 在线考试 · 自动阅卷 · 成绩分析'
+        content: '个人全栈技术实践项目：题库管理 · 智能组卷 · 在线考试 · 自动阅卷 · 成绩分析 · 即时通讯'
       }
     ],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
