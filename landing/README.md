@@ -1,8 +1,8 @@
-# 在线考试系统 · 营销落地页（landing）
+# 在线考试系统 · 项目落地页（landing）
 
-基于 **Astro 5 + Tailwind 4** 构建的产品营销首页。零 JS 默认输出、构建为纯静态 HTML，可部署到 Vercel / Netlify / GitHub Pages。
+基于 **Astro 5 + Tailwind 4** 构建的项目展示首页。零 JS 默认输出、构建为纯静态 HTML，可部署到 Vercel / Netlify / GitHub Pages。
 
-> 与 `docs-site/`（VitePress 文档站）分工：本项目是「产品门面」，文档站是「技术文档区」（`/docs`）。
+> 与 `docs-site/`（VitePress 文档站）分工：本页面是「项目门面」，文档站是「技术文档区」（`/docs`）。
 
 ## 本地开发
 

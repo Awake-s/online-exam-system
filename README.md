@@ -12,7 +12,7 @@
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479a1.svg)](https://www.mysql.com/)
 [![Redis](https://img.shields.io/badge/Redis-6.x-dc382d.svg)](https://redis.io/)
 
-[在线体验](http://124.222.21.219) · [产品官网](https://awake-s.github.io/online-exam-system/) · [功能特性](docs-site/features.md) · [迭代路线](docs-site/roadmap.md)
+[在线体验](http://124.222.21.219) · [项目官网](https://awake-s.github.io/online-exam-system/) · [功能特性](docs-site/features.md) · [迭代路线](docs-site/roadmap.md)
 
 </div>
 
@@ -59,7 +59,7 @@
 | 通信 | Axios · @stomp/stompjs · sockjs-client |
 | 质量 | ESLint 9 · Prettier · Stylelint · vue-tsc |
 
-### 产品官网（`docs-site/`）
+### 项目官网（`docs-site/`）
 
 | 技术 | 用途 |
 | :--- | :--- |
@@ -152,7 +152,7 @@ npm run dev
 在线考试系统/
 ├── exam-system/          # 后端（Spring Boot）
 ├── art-design-pro-ui/    # 前端（Vue3 + Vite）
-├── docs-site/            # 产品官网（VitePress → GitHub Pages）
+├── docs-site/            # 项目官网（VitePress → GitHub Pages）
 ├── deploy/               # 部署工具链（脚本 + 配置 + 文档）
 ├── doc/                  # 项目文档（数据库设计/PRD/测试报告/论文）
 └── .github/workflows/    # CI/CD（官网自动部署）
@@ -175,7 +175,7 @@ npm run dev
 
 <div align="center">
 
-**[在线体验](http://124.222.21.219)** · **[产品官网](https://awake-s.github.io/online-exam-system/)** · **[迭代路线](doc/迭代路线图.md)**
+**[在线体验](http://124.222.21.219)** · **[项目官网](https://awake-s.github.io/online-exam-system/)** · **[迭代路线](doc/迭代路线图.md)**
 
 如果这个项目对你有帮助，欢迎 ⭐ Star 支持！
 
