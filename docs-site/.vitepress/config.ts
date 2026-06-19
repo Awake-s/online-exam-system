@@ -15,6 +15,8 @@ const REPO = 'online-exam-system' // 仓库名
 // 域名 examplatform.online 备案完成后，把这里换成 https://examplatform.online 即可
 // （Nginx server_name 通配 _，IP 与域名命中同一 server，前端/后端零改动）
 const LIVE_URL = 'http://124.222.21.219'
+// landing 落地页地址（Astro 构建，部署在 /landing/ 子路径）
+const LANDING_URL = `https://${GITHUB_USER}.github.io/${REPO}/landing/`
 
 export default defineConfig({
   lang: 'zh-CN',
@@ -60,6 +62,7 @@ export default defineConfig({
       { text: '技术架构', link: '/architecture' },
       { text: '性能数据', link: '/benchmark' },
       { text: '迭代路线', link: '/roadmap' },
+      { text: '落地页', link: LANDING_URL },
       { text: '在线体验', link: LIVE_URL }
     ],
 

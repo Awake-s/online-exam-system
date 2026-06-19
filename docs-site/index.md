@@ -16,6 +16,9 @@ hero:
       text: GitHub 源码
       link: https://github.com/Awake-s/online-exam-system
     - theme: alt
+      text: 查看落地页 →
+      link: https://awake-s.github.io/online-exam-system/landing/
+    - theme: alt
       text: 查看功能特性 →
       link: /features
 

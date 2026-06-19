@@ -16,7 +16,8 @@ export const SITE = {
   demoUrl: 'http://124.222.21.219',
   // GitHub 源码仓库
   githubUrl: 'https://github.com/Awake-s/online-exam-system',
-  docsUrl: '/docs/', // VitePress 文档区（保留复用）
+  // docs-site 项目官网地址（VitePress 文档站）
+  docsUrl: 'https://awake-s.github.io/online-exam-system/',
   ogImage: '/og-image.svg',
   author: '陶展',
   year: 2026
