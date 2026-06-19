@@ -47,7 +47,7 @@
 | ORM | MyBatis-Plus | 3.5.5 | 增删改查、逻辑删除、分页 |
 | 数据库 | MySQL | 8.0 | 业务持久化 |
 | 连接池 | HikariCP | 随 Boot | 高性能连接池（生产 max=20） |
-| 缓存 | Redis（Lettuce） | 6.5.1 | 缓存、JWT 黑名单、限流 |
+| 缓存 | Redis + Lettuce | 3.x / 6.5.1 | Redis 服务器 + Lettuce 客户端（缓存、JWT 黑名单、限流） |
 | Excel | EasyExcel | 3.3.3 | 题库 / 用户批量导入导出 |
 | 工具 | Hutool / Guava | 5.8.25 / 33.0 | 通用工具、登录限流 |
 | 运维 | Actuator | 随 Boot | 健康检查、指标暴露 |

@@ -61,7 +61,7 @@ export default defineConfig({
       { text: '三端展示', link: '/roles' },
       { text: '技术架构', link: '/architecture' },
       { text: '性能数据', link: '/benchmark' },
-      { text: '迭代路线', link: '/roadmap' },
+      { text: '演进规划', link: '/roadmap' },
       { text: '落地页', link: LANDING_URL },
       { text: '在线体验', link: LIVE_URL }
     ],
