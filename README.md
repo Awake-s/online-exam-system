@@ -153,9 +153,10 @@ npm run dev
 ├── exam-system/          # 后端（Spring Boot）
 ├── art-design-pro-ui/    # 前端（Vue3 + Vite）
 ├── docs-site/            # 项目官网（VitePress → GitHub Pages）
+├── landing/              # 项目落地页（Astro → GitHub Pages /landing/）
 ├── deploy/               # 部署工具链（脚本 + 配置 + 文档）
 ├── doc/                  # 项目文档（数据库设计/PRD/测试报告/论文）
-└── .github/workflows/    # CI/CD（官网自动部署）
+└── .github/workflows/    # CI/CD（官网 + 落地页自动部署）
 ```
 
 ## 🗺️ 迭代路线

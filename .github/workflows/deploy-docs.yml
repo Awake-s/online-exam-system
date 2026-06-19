@@ -1,20 +1,23 @@
 # ====================================================================
-# VitePress 产品官网 → GitHub Pages 自动部署
+# 项目官网 → GitHub Pages 自动部署（docs-site + landing）
 # ====================================================================
-# 触发：main 分支的 docs-site/ 或本文件有改动时
-# 产物：发布到 GitHub Pages，地址 https://<用户名>.github.io/<repo>/
+# 触发：main 分支的 docs-site/、landing/ 或本文件有改动时
+# 产物：发布到 GitHub Pages
+#   - docs-site（VitePress）：https://awake-s.github.io/online-exam-system/
+#   - landing（Astro）：      https://awake-s.github.io/online-exam-system/landing/
 #
 # 前置条件（在 GitHub 仓库一次性配置）：
 #   Settings → Pages → Build and deployment → Source = "GitHub Actions"
 # ====================================================================
 
-name: Deploy VitePress Site
+name: Deploy Project Site
 
 on:
   push:
     branches: [main, master]
     paths:
       - 'docs-site/**'
+      - 'landing/**'
       - '.github/workflows/deploy-docs.yml'
   workflow_dispatch:
 
@@ -43,6 +46,7 @@ jobs:
         with:
           node-version: 22
 
+      # ============ 构建 docs-site（VitePress） ============
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -61,7 +65,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      - name: Install dependencies
+      - name: Install docs-site dependencies
         run: pnpm install --frozen-lockfile
         working-directory: docs-site
 
@@ -69,13 +73,41 @@ jobs:
         run: pnpm run build
         working-directory: docs-site
 
+      # ============ 构建 landing（Astro） ============
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('landing/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install landing dependencies
+        run: npm ci
+        working-directory: landing
+
+      - name: Build Astro landing page
+        run: npm run build
+        working-directory: landing
+
+      # ============ 合并产物 ============
+      - name: Merge sites into Pages artifact
+        shell: bash
+        run: |
+          mkdir -p _site
+          # docs-site → 根路径
+          cp -r docs-site/.vitepress/dist/* _site/
+          # landing → /landing/ 子路径
+          mkdir -p _site/landing
+          cp -r landing/dist/* _site/landing/
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs-site/.vitepress/dist
+          path: _site
 
   deploy:
     needs: build

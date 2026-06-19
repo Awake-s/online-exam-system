@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "在线考试系统 · 产品营销落地页（Astro + Tailwind）",
+  "description": "在线考试系统 · 项目展示落地页（Astro + Tailwind）",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

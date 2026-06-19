@@ -3,15 +3,15 @@ import { defineConfig } from 'astro/config'
 import tailwindcss from '@tailwindcss/vite'
 
 // ====================================================================
-// 在线考试系统 · 营销落地页（Astro 5 + Tailwind 4）
+// 在线考试系统 · 项目落地页（Astro 5 + Tailwind 4）
 // --------------------------------------------------------------------
 // 部署说明：
-//   - Vercel / Netlify 根路径部署：site 改为你的域名，base 删除或设为 '/'
-//   - GitHub Pages 项目站点（子路径）：base 设为 '/你的仓库名/'
+//   - GitHub Pages 子路径：base 设为 '/online-exam-system/landing/'
+//   - Vercel / Netlify 独立部署：site 改为你的域名，base 删除或设为 '/'
 // ====================================================================
 export default defineConfig({
-  site: 'https://your-domain.example', // TODO: 替换为真实域名
-  // base: '/online-exam-system/',     // 仅 GitHub Pages 项目站点需要，按需开启
+  site: 'https://awake-s.github.io',
+  base: '/online-exam-system/landing/',
   vite: {
     plugins: [tailwindcss()]
   }
