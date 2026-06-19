@@ -12,7 +12,7 @@
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479a1.svg)](https://www.mysql.com/)
 [![Redis](https://img.shields.io/badge/Redis-6.x-dc382d.svg)](https://redis.io/)
 
-[在线体验](http://124.222.21.219) · [项目官网](https://awake-s.github.io/online-exam-system/) · [功能特性](docs-site/features.md) · [迭代路线](docs-site/roadmap.md)
+[在线体验](http://124.222.21.219) · [项目官网](https://awake-s.github.io/online-exam-system/) · [功能特性](docs-site/features.md) · [演进规划](docs-site/roadmap.md)
 
 </div>
 
@@ -22,7 +22,7 @@
 
 一个基于 **Spring Boot + Vue3** 前后端分离架构的在线考试系统，支持**管理员 / 教师 / 学生**三端角色，权限严格隔离。从出题、组卷、发布考试、在线答题、自动阅卷到成绩分析，形成完整的数字化考试闭环。
 
-> 本项目源自毕业设计（获评「优」），现作为个人技术作品集持续迭代，规划向企业级微服务架构演进。
+> 个人全栈技术实践项目，以考试业务为载体完成 Spring Boot + Vue 3 全栈工程落地。所有数据均为演示数据。
 
 ## 🌟 核心功能
 
@@ -155,18 +155,13 @@ npm run dev
 ├── docs-site/            # 项目官网（VitePress → GitHub Pages）
 ├── landing/              # 项目落地页（Astro → GitHub Pages /landing/）
 ├── deploy/               # 部署工具链（脚本 + 配置 + 文档）
-├── doc/                  # 项目文档（数据库设计/PRD/测试报告/论文）
+├── doc/                  # 项目文档（数据库设计/PRD/测试报告）
 └── .github/workflows/    # CI/CD（官网 + 落地页自动部署）
 ```
 
-## 🗺️ 迭代路线
+## 🗺️ 后续演进方向
 
-本项目持续向企业级架构演进，完整路线见 [`doc/迭代路线图.md`](doc/迭代路线图.md)：
-
-- ✅ **已完成**：毕业设计全闭环（题库/组卷/考试/阅卷/成绩/通知/聊天）
-- 🔵 **P0**：开源上线 · API 文档（Knife4j）· 单元测试 · CI/CD
-- ⬜ **P1**：Spring Boot 3 + Java 17 · Docker 容器化 · Nacos 配置中心
-- ⬜ **P2**：Spring Cloud Alibaba 微服务 · 可观测性 · 高可用中间件
+本项目已完整交付考试业务全闭环。后续计划探索 Docker 容器化、Spring Boot 3 升级与微服务架构，详见 [技术演进规划](docs-site/roadmap.md)。
 
 ## 📝 License
 
@@ -176,7 +171,7 @@ npm run dev
 
 <div align="center">
 
-**[在线体验](http://124.222.21.219)** · **[项目官网](https://awake-s.github.io/online-exam-system/)** · **[迭代路线](doc/迭代路线图.md)**
+**[在线体验](http://124.222.21.219)** · **[项目官网](https://awake-s.github.io/online-exam-system/)** · **[演进规划](docs-site/roadmap.md)**
 
 如果这个项目对你有帮助，欢迎 ⭐ Star 支持！
 

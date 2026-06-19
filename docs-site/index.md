@@ -94,19 +94,19 @@ features:
 
 <div class="journey-section">
   <h2 style="text-align:center;">项目历程</h2>
-  <p style="text-align:center;color:var(--vp-c-text-2);">从一个毕业设计，到一个持续演进的开源产品</p>
+  <p style="text-align:center;color:var(--vp-c-text-2);">个人全栈技术实践项目的演进历程</p>
 
   <div class="timeline">
     <div class="timeline-item">
       <div class="timeline-dot done"></div>
       <div class="timeline-content">
         <div class="timeline-date">2026.03 — 2026.06</div>
-        <h3>毕业设计 · 评级「优」</h3>
-        <p>完成需求分析、概要 / 详细设计、编码实现、系统测试与论文撰写。覆盖题库、组卷、考试、阅卷、成绩、通知、聊天全闭环。</p>
+        <h3>全栈开发 · 完整闭环交付</h3>
+        <p>完成需求分析、概要 / 详细设计、编码实现、系统测试（接口 + 性能压测）。覆盖题库、组卷、考试、阅卷、成绩、通知、聊天全闭环。</p>
       </div>
     </div>
     <div class="timeline-item">
-      <div class="timeline-dot doing"></div>
+      <div class="timeline-dot done"></div>
       <div class="timeline-content">
         <div class="timeline-date">2026.06</div>
         <h3>开源上线 · GitHub 作品集</h3>
@@ -116,17 +116,9 @@ features:
     <div class="timeline-item">
       <div class="timeline-dot todo"></div>
       <div class="timeline-content">
-        <div class="timeline-date">规划中</div>
-        <h3>云原生 · 容器化</h3>
-        <p>升级 Spring Boot 3 + Java 17，引入 Docker / Compose 一键部署、Nacos 配置中心、CI/CD 持续交付。</p>
-      </div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot todo"></div>
-      <div class="timeline-content">
-        <div class="timeline-date">长期演进</div>
-        <h3>微服务 · 可观测性</h3>
-        <p>Spring Cloud Alibaba（Nacos / Sentinel / Seata）拆分服务，Prometheus + Grafana + SkyWalking 全链路可观测，迈向企业级。</p>
+        <div class="timeline-date">后续</div>
+        <h3>持续学习与演进</h3>
+        <p>探索 Docker 容器化、Spring Boot 3 升级与微服务架构，持续提升工程能力。</p>
       </div>
     </div>
   </div>
